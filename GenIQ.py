@@ -257,7 +257,7 @@ class top_block(gr.top_block, Qt.QWidget):
         self.blocks_packed_to_unpacked_0 = blocks.packed_to_unpacked_bb(QPSK[1], gr.GR_MSB_FIRST)
         self.blocks_packed_to_unpacked = blocks.packed_to_unpacked_bb(BPSK[1], gr.GR_MSB_FIRST)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, 1000000)
-        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, "samples(snr_20mod_4).dat", False)
+        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, "samples-1mod_4.dat", False)
         self.blocks_file_sink_0_0.set_unbuffered(False)
         self.blocks_delay_0 = blocks.delay(gr.sizeof_gr_complex*1, 0)
         self.blocks_add_xx_0 = blocks.add_vcc(1)
@@ -415,7 +415,7 @@ class top_block(gr.top_block, Qt.QWidget):
     def randomize_values(self,index):
         rand_snr = randint(1,30)
         rand_mod = randint(0,4)
-        fname = "samples" + str(index) + "(snr_" + str(rand_snr) + "mod_" + str(rand_mod) + ").dat"
+        fname = "samples" + str(index) + "mod_" + str(rand_mod) + ".dat"
         self.set_samps_per_symb(rand_snr)
         self.set_modulation_scheme(rand_mod)
         self.set_filename(fname)
