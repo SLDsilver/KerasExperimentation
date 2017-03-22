@@ -34,7 +34,7 @@ class top_block(gr.top_block):
         self.rrc_alpha = rrc_alpha = 0.35
         self.noise_volt = noise_volt = pow(samps_per_symb/pow(10.0,SNR/10.0),0.5)
         self.modulation_scheme = modulation_scheme = randint(0,4)
-        os.system('echo "samples' + str(ind) + ': ' + str(modulation_scheme) + '"' + ' >> modScheme.txt')
+        os.system('echo "' + str(modulation_scheme) + '"' + ' >> modScheme.txt')
         self.VT = VT = 4,6,[ -1.5633e+00+ 5.5460e-01j, -1.3833e+00+ 5.5460e-01j,
         -1.0234e+00+ 5.5460e-01j, -1.2034e+00+ 5.5460e-01j,
         -7.3553e-01+ 5.0751e-02j, -8.0750e-01+ 1.7671e-01j,
@@ -87,7 +87,7 @@ class top_block(gr.top_block):
         self.blocks_packed_to_unpacked_1 = blocks.packed_to_unpacked_bb(QAM16[1], gr.GR_MSB_FIRST)
         self.blocks_packed_to_unpacked_0 = blocks.packed_to_unpacked_bb(QPSK[1], gr.GR_MSB_FIRST)
         self.blocks_packed_to_unpacked = blocks.packed_to_unpacked_bb(BPSK[1], gr.GR_MSB_FIRST)
-        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, 1000000)
+        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, 10000)
         self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, "samples" + str(self.file_index) + ".dat", False)
         self.blocks_file_sink_0_0.set_unbuffered(False)
         self.blocks_add_xx_0 = blocks.add_vcc(1)
