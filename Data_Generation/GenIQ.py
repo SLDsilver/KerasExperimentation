@@ -1,76 +1,40 @@
 #!/usr/bin/env python2
-# -*- coding: utf-8 -*-
-##################################################
-# GNU Radio Python Flow Graph
-# Title: Top Block
-# Generated: Fri Mar 17 16:35:30 2017
-##################################################
 
-if __name__ == '__main__':
-    import ctypes
-    import sys
-    if sys.platform.startswith('linux'):
-        try:
-            x11 = ctypes.cdll.LoadLibrary('libX11.so')
-            x11.XInitThreads()
-        except:
-            print "Warning: failed to XInitThreads()"
-
-from PyQt4 import Qt
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import eng_notation
 from gnuradio import filter
 from gnuradio import gr
-from gnuradio import qtgui
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from grc_gnuradio import blks2 as grc_blks2
 from math import log10
 from optparse import OptionParser
-from random import randint
 import numpy
-import sip
 import sys
+import os
+from random import randint
 
-class top_block(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
-        self.fname = ""
+class top_block(gr.top_block):
+
+    def __init__(self,ind):
         gr.top_block.__init__(self, "Top Block")
-        Qt.QWidget.__init__(self)
-        self.setWindowTitle("Top Block")
-        try:
-            self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
-        except:
-            pass
-        self.top_scroll_layout = Qt.QVBoxLayout()
-        self.setLayout(self.top_scroll_layout)
-        self.top_scroll = Qt.QScrollArea()
-        self.top_scroll.setFrameStyle(Qt.QFrame.NoFrame)
-        self.top_scroll_layout.addWidget(self.top_scroll)
-        self.top_scroll.setWidgetResizable(True)
-        self.top_widget = Qt.QWidget()
-        self.top_scroll.setWidget(self.top_widget)
-        self.top_layout = Qt.QVBoxLayout(self.top_widget)
-        self.top_grid_layout = Qt.QGridLayout()
-        self.top_layout.addLayout(self.top_grid_layout)
-
-        self.settings = Qt.QSettings("GNU Radio", "top_block")
-        self.restoreGeometry(self.settings.value("geometry").toByteArray())
 
         ##################################################
         # Variables
         ##################################################
+        self.file_index = ind
         self.symb_rate = symb_rate = 10e6
         self.samp_rate = samp_rate = 100e6
         self.samps_per_symb = samps_per_symb = int(samp_rate/symb_rate)
-        self.SNR = SNR = 20
+        self.SNR = SNR = randint(1,30)
         self.rrc_taps = rrc_taps = 101
         self.rrc_alpha = rrc_alpha = 0.35
         self.noise_volt = noise_volt = pow(samps_per_symb/pow(10.0,SNR/10.0),0.5)
-        self.modulation_scheme = modulation_scheme = 4
+        self.modulation_scheme = modulation_scheme = randint(0,4)
+        os.system('echo "' + str(modulation_scheme) + '"' + ' >> modScheme.txt')
         self.VT = VT = 4,6,[ -1.5633e+00+ 5.5460e-01j, -1.3833e+00+ 5.5460e-01j,
         -1.0234e+00+ 5.5460e-01j, -1.2034e+00+ 5.5460e-01j,
         -7.3553e-01+ 5.0751e-02j, -8.0750e-01+ 1.7671e-01j,
@@ -111,155 +75,21 @@ class top_block(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.root_raised_cosine_filter_0_0 = filter.fir_filter_ccf(samps_per_symb, firdes.root_raised_cosine(
-        	1.0, samp_rate, symb_rate, rrc_alpha, rrc_taps))
         self.root_raised_cosine_filter_0 = filter.interp_fir_filter_ccf(samps_per_symb, firdes.root_raised_cosine(
         	samps_per_symb, samp_rate, symb_rate, rrc_alpha, rrc_taps))
-        self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
-        	1024, #size
-        	samp_rate, #samp_rate
-        	"", #name
-        	1 #number of inputs
-        )
-        self.qtgui_time_sink_x_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0.set_y_axis(-1, 1)
-
-        self.qtgui_time_sink_x_0.set_y_label("Amplitude", "")
-
-        self.qtgui_time_sink_x_0.enable_tags(-1, True)
-        self.qtgui_time_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0.enable_autoscale(True)
-        self.qtgui_time_sink_x_0.enable_grid(False)
-        self.qtgui_time_sink_x_0.enable_control_panel(False)
-
-        if not True:
-          self.qtgui_time_sink_x_0.disable_legend()
-
-        labels = ["", "", "", "", "",
-                  "", "", "", "", ""]
-        widths = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
-        colors = ["blue", "red", "green", "black", "cyan",
-                  "magenta", "yellow", "dark red", "dark green", "blue"]
-        styles = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
-        markers = [-1, -1, -1, -1, -1,
-                   -1, -1, -1, -1, -1]
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-                  1.0, 1.0, 1.0, 1.0, 1.0]
-
-        for i in xrange(2*1):
-            if len(labels[i]) == 0:
-                if(i % 2 == 0):
-                    self.qtgui_time_sink_x_0.set_line_label(i, "Re{{Data {0}}}".format(i/2))
-                else:
-                    self.qtgui_time_sink_x_0.set_line_label(i, "Im{{Data {0}}}".format(i/2))
-            else:
-                self.qtgui_time_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_0.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
-
-        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
-        	1024, #size
-        	firdes.WIN_BLACKMAN_hARRIS, #wintype
-        	0, #fc
-        	samp_rate, #bw
-        	"", #name
-        	1 #number of inputs
-        )
-        self.qtgui_freq_sink_x_0.set_update_time(0.10)
-        self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
-        self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
-        self.qtgui_freq_sink_x_0.enable_autoscale(False)
-        self.qtgui_freq_sink_x_0.enable_grid(False)
-        self.qtgui_freq_sink_x_0.set_fft_average(0.2)
-        self.qtgui_freq_sink_x_0.enable_control_panel(False)
-
-        if not True:
-          self.qtgui_freq_sink_x_0.disable_legend()
-
-        if "complex" == "float" or "complex" == "msg_float":
-          self.qtgui_freq_sink_x_0.set_plot_pos_half(not True)
-
-        labels = ["", "", "", "", "",
-                  "", "", "", "", ""]
-        widths = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
-        colors = ["blue", "red", "green", "black", "cyan",
-                  "magenta", "yellow", "dark red", "dark green", "dark blue"]
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-                  1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(1):
-            if len(labels[i]) == 0:
-                self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_freq_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_freq_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_freq_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
-
-        self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
-        self.qtgui_const_sink_x_0 = qtgui.const_sink_c(
-        	1024, #size
-        	"", #name
-        	1 #number of inputs
-        )
-        self.qtgui_const_sink_x_0.set_update_time(0.10)
-        self.qtgui_const_sink_x_0.set_y_axis(-2, 2)
-        self.qtgui_const_sink_x_0.set_x_axis(-2, 2)
-        self.qtgui_const_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, "")
-        self.qtgui_const_sink_x_0.enable_autoscale(False)
-        self.qtgui_const_sink_x_0.enable_grid(False)
-
-        if not True:
-          self.qtgui_const_sink_x_0.disable_legend()
-
-        labels = ["", "", "", "", "",
-                  "", "", "", "", ""]
-        widths = [1, 1, 1, 1, 1,
-                  1, 1, 1, 1, 1]
-        colors = ["blue", "red", "red", "red", "red",
-                  "red", "red", "red", "red", "red"]
-        styles = [0, 0, 0, 0, 0,
-                  0, 0, 0, 0, 0]
-        markers = [0, 0, 0, 0, 0,
-                   0, 0, 0, 0, 0]
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-                  1.0, 1.0, 1.0, 1.0, 1.0]
-        for i in xrange(1):
-            if len(labels[i]) == 0:
-                self.qtgui_const_sink_x_0.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_const_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_const_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_const_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_const_sink_x_0.set_line_style(i, styles[i])
-            self.qtgui_const_sink_x_0.set_line_marker(i, markers[i])
-            self.qtgui_const_sink_x_0.set_line_alpha(i, alphas[i])
-
-        self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
         self.digital_chunks_to_symbols_2_0 = digital.chunks_to_symbols_bc((VT[2]), 1)
         self.digital_chunks_to_symbols_2 = digital.chunks_to_symbols_bc((QAM64[2]), 1)
         self.digital_chunks_to_symbols_1 = digital.chunks_to_symbols_bc((QAM16[2]), 1)
         self.digital_chunks_to_symbols_0 = digital.chunks_to_symbols_bc((QPSK[2]), 1)
         self.digital_chunks_to_symbols = digital.chunks_to_symbols_bc((BPSK[2]), 1)
-        self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_packed_to_unpacked_2_0 = blocks.packed_to_unpacked_bb(VT[1], gr.GR_MSB_FIRST)
         self.blocks_packed_to_unpacked_2 = blocks.packed_to_unpacked_bb(QAM64[1], gr.GR_MSB_FIRST)
         self.blocks_packed_to_unpacked_1 = blocks.packed_to_unpacked_bb(QAM16[1], gr.GR_MSB_FIRST)
         self.blocks_packed_to_unpacked_0 = blocks.packed_to_unpacked_bb(QPSK[1], gr.GR_MSB_FIRST)
         self.blocks_packed_to_unpacked = blocks.packed_to_unpacked_bb(BPSK[1], gr.GR_MSB_FIRST)
-        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, 1000000)
-        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, "samples-1mod_4.dat", False)
+        self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, 10000)
+        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, "samples" + str(self.file_index) + ".dat", False)
         self.blocks_file_sink_0_0.set_unbuffered(False)
-        self.blocks_delay_0 = blocks.delay(gr.sizeof_gr_complex*1, 0)
         self.blocks_add_xx_0 = blocks.add_vcc(1)
         self.blks2_selector_0 = grc_blks2.selector(
         	item_size=gr.sizeof_gr_complex*1,
@@ -282,30 +112,18 @@ class top_block(gr.top_block, Qt.QWidget):
         self.connect((self.analog_random_source_x_0, 0), (self.blocks_packed_to_unpacked_2_0, 0))
         self.connect((self.blks2_selector_0, 0), (self.root_raised_cosine_filter_0, 0))
         self.connect((self.blocks_add_xx_0, 0), (self.blocks_head_0, 0))
-        self.connect((self.blocks_add_xx_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.blocks_delay_0, 0), (self.qtgui_freq_sink_x_0, 0))
-        self.connect((self.blocks_delay_0, 0), (self.root_raised_cosine_filter_0_0, 0))
         self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0_0, 0))
         self.connect((self.blocks_packed_to_unpacked, 0), (self.digital_chunks_to_symbols, 0))
         self.connect((self.blocks_packed_to_unpacked_0, 0), (self.digital_chunks_to_symbols_0, 0))
         self.connect((self.blocks_packed_to_unpacked_1, 0), (self.digital_chunks_to_symbols_1, 0))
         self.connect((self.blocks_packed_to_unpacked_2, 0), (self.digital_chunks_to_symbols_2, 0))
         self.connect((self.blocks_packed_to_unpacked_2_0, 0), (self.digital_chunks_to_symbols_2_0, 0))
-        self.connect((self.blocks_throttle_0, 0), (self.blocks_delay_0, 0))
         self.connect((self.digital_chunks_to_symbols, 0), (self.blks2_selector_0, 0))
         self.connect((self.digital_chunks_to_symbols_0, 0), (self.blks2_selector_0, 1))
         self.connect((self.digital_chunks_to_symbols_1, 0), (self.blks2_selector_0, 2))
         self.connect((self.digital_chunks_to_symbols_2, 0), (self.blks2_selector_0, 3))
         self.connect((self.digital_chunks_to_symbols_2_0, 0), (self.blks2_selector_0, 4))
         self.connect((self.root_raised_cosine_filter_0, 0), (self.blocks_add_xx_0, 1))
-        self.connect((self.root_raised_cosine_filter_0, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.root_raised_cosine_filter_0_0, 0), (self.qtgui_const_sink_x_0, 0))
-
-    def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "top_block")
-        self.settings.setValue("geometry", self.saveGeometry())
-        event.accept()
-
 
     def get_symb_rate(self):
         return self.symb_rate
@@ -314,7 +132,6 @@ class top_block(gr.top_block, Qt.QWidget):
         self.symb_rate = symb_rate
         self.set_samps_per_symb(int(self.samp_rate/self.symb_rate))
         self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(self.samps_per_symb, self.samp_rate, self.symb_rate, self.rrc_alpha, self.rrc_taps))
-        self.root_raised_cosine_filter_0_0.set_taps(firdes.root_raised_cosine(1.0, self.samp_rate, self.symb_rate, self.rrc_alpha, self.rrc_taps))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -322,11 +139,7 @@ class top_block(gr.top_block, Qt.QWidget):
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
         self.set_samps_per_symb(int(self.samp_rate/self.symb_rate))
-        self.blocks_throttle_0.set_sample_rate(self.samp_rate)
-        self.qtgui_freq_sink_x_0.set_frequency_range(0, self.samp_rate)
-        self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
         self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(self.samps_per_symb, self.samp_rate, self.symb_rate, self.rrc_alpha, self.rrc_taps))
-        self.root_raised_cosine_filter_0_0.set_taps(firdes.root_raised_cosine(1.0, self.samp_rate, self.symb_rate, self.rrc_alpha, self.rrc_taps))
 
     def get_samps_per_symb(self):
         return self.samps_per_symb
@@ -349,7 +162,6 @@ class top_block(gr.top_block, Qt.QWidget):
     def set_rrc_taps(self, rrc_taps):
         self.rrc_taps = rrc_taps
         self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(self.samps_per_symb, self.samp_rate, self.symb_rate, self.rrc_alpha, self.rrc_taps))
-        self.root_raised_cosine_filter_0_0.set_taps(firdes.root_raised_cosine(1.0, self.samp_rate, self.symb_rate, self.rrc_alpha, self.rrc_taps))
 
     def get_rrc_alpha(self):
         return self.rrc_alpha
@@ -357,7 +169,6 @@ class top_block(gr.top_block, Qt.QWidget):
     def set_rrc_alpha(self, rrc_alpha):
         self.rrc_alpha = rrc_alpha
         self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(self.samps_per_symb, self.samp_rate, self.symb_rate, self.rrc_alpha, self.rrc_taps))
-        self.root_raised_cosine_filter_0_0.set_taps(firdes.root_raised_cosine(1.0, self.samp_rate, self.symb_rate, self.rrc_alpha, self.rrc_taps))
 
     def get_noise_volt(self):
         return self.noise_volt
@@ -408,28 +219,15 @@ class top_block(gr.top_block, Qt.QWidget):
         self.BPSK = BPSK
         self.digital_chunks_to_symbols.set_symbol_table((self.BPSK[2]))
 
-    def set_filename(self, newfile):
-        self.blocks_file_sink_0_0 = blocks.file_sink(gr.sizeof_gr_complex*1, newfile, False)
-        self.blocks_file_sink_0_0.set_unbuffered(False)
 
-    def randomize_values(self,index):
-        rand_snr = randint(1,30)
-        rand_mod = randint(0,4)
-        fname = "samples" + str(index) + "mod_" + str(rand_mod) + ".dat"
-        self.set_samps_per_symb(rand_snr)
-        self.set_modulation_scheme(rand_mod)
-        self.set_filename(fname)
+def main(index, options=None):
 
-def main(top_block_cls=top_block, options=None):
+    tb = top_block(index)
+    tb.start()
+    tb.wait()
 
-    #from distutils.version import StrictVersion
-    #if StrictVersion(Qt.qVersion()) >= StrictVersion("4.5.0"):
-    #    style = gr.prefs().get_string('qtgui', 'style', 'raster')
-    #    Qt.QApplication.setGraphicsSystem(style)
-    qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
-
+if __name__ == '__main__':
     iterations = 1
     if len(sys.argv) == 2:
         try:
@@ -439,22 +237,7 @@ def main(top_block_cls=top_block, options=None):
     elif len(sys.argv) > 2:
             print("Invalid number of arguments, 0 or 1 expected")
 
-    for i in range(0,iterations-1):
-        tb.randomize_values(i)
-        tb.start()
-        tb.stop()
-        tb.wait()
-            #tb.show()
-
-    #def quitting():
-    #    tb.stop()
-    #    tb.wait()
-
-    #Disable GUI output
-    #qapp.connect(qapp, Qt.SIGNAL("aboutToQuit()"), quitting)
-    #qapp.exec_()
-
-    #quitting()
-
-if __name__ == '__main__':
-    main()
+    i = 0
+    while i in range(0,iterations):
+        main(i)
+        i = i+1
