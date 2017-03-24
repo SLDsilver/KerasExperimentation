@@ -10,10 +10,31 @@ def correct_Complex(filename, outname):
     with open(filename, 'r+') as text_file:
         for line in text_file:
             if "+ -" in line:
-                f.write(line.replace("+ -", "-"))
+                f.write(line.replace(" + -", "\n"))
             else:
-                f.write(line.replace("+ ", "+"))
+                f.write(line.replace(" + ", "\n"))
+                
     f.close()
+
+def remove_Imaginary(filename, outname):
+    f = open(outname, "a+")
+    with open(filename, 'r+') as text_file:
+        for line in text_file:
+            if "j" in line:
+                f.write(line.replace("j", ""))
+                
+    f.close()
+
+def adjust_Output(filename, outname, num):
+    f.open(outname, "w+")
+    with open(filename, 'r+') as text_file:
+        for line in text_file:
+            temp = line;
+            for i in range(0, num):
+                f.write(temp + "\n")
+    f.close()
+            
+        
 
 
 def import_As_Numpy_Array(filename):
