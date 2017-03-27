@@ -9,7 +9,8 @@ function toFile(fname)
     i = 1;
     while(1)
         try
-            fprintf(fileID, '%f + %fj\n', answer(i), answer(i)/1i);
+            fprintf(fileID, '%f\n', answer(i)); 
+            fprintf(fileID, '%f\n', answer(i)/1i);
             i = i+1;
         catch
             break;
