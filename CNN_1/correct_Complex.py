@@ -22,16 +22,18 @@ def remove_Imaginary(filename, outname):
         for line in text_file:
             if "j" in line:
                 f.write(line.replace("j", ""))
+            else:
+                f.write(line)
                 
     f.close()
 
 def adjust_Output(filename, outname, num):
-    f.open(outname, "w+")
+    f = open(outname, "w+")
     with open(filename, 'r+') as text_file:
         for line in text_file:
             temp = line;
             for i in range(0, num):
-                f.write(temp + "\n")
+                f.write(temp)
     f.close()
             
         
