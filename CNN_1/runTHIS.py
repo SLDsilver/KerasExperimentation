@@ -4,41 +4,21 @@ from keras.utils import np_utils
 from keras.layers import Conv1D, GlobalAveragePooling1D, MaxPooling1D
 
 import numpy as np
-import correct_Complex as c
+import load_data as ld
 
-input_train = np.empty([20000, 100, 1],dtype = float)
+train_directory = "samples"
+test_directory = 'not yet defined'
 
-'''
-for i in range(0, 100):
-    inputfile = "samples/samples" + str(i) + ".txt"
-    c.correct_Complex(inputfile, "data")
-    c.remove_Imaginary("data", "dataNoI")
-    newData = np.loadtxt("dataNoI", dtype=float)
-    print("Currently processing: " + inputfile)
-'''
-
-#Load the input data
-newData = np.loadtxt("dataNoI", dtype=float)
-input_train = newData.reshape([20000, 100, 1])
-print('Input volume is:' + str(input_train.shape))
-
-#Load the correct answer
-outputfile = "modScheme.txt"
-#Adjust OutputFile
-c.adjust_Output("samples/modScheme.txt", outputfile, 200)
-output_train = np.loadtxt(outputfile)
-print('Output volume is: ' + str(output_train.shape))
-
-#Load the testing data
-inputtestfile = "samples2/samples0.txt"
-outputtestfile = "samples2/modScheme.txt"
-
-output_test = np_utils.to_categorical(np.loadtxt(outputtestfile))
-num_classes = output_test.shape[1]
-print('Num_classes is' + str(num_classes))
+#Load the training tuple
+input_x, input_y = ld.loadData(train_directory, 10, 10000)
+print("This is the input vector")
+print(input_x)
+print("This is the output vector")
+print(input_y)
 
 
-################################# Model Construction ############################
+
+'''################################# Model Construction ############################
 
 #Adjust model parameters here
 
@@ -65,3 +45,4 @@ print(layer.input)
 print(layer.output)
 model.fit(input_train, output_train, batch_size = 16, epochs=10)
 print(model.evaluate(input_test, output_test, batch_size=1))
+'''
