@@ -11,10 +11,7 @@ test_directory = 'not yet defined'
 
 #Load the training tuple
 input_x, input_y = ld.loadData(train_directory, 10, 10000)
-print("This is the input vector")
-print(input_x)
-print("This is the output vector")
-print(input_y)
+
 
 
 
