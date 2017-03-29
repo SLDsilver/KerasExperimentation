@@ -12,13 +12,12 @@ output_id = 'mod'
 
 def loadData(directory, num_signal, num_samples):
     temp_input = np.zeros(shape=(num_signal, num_samples*2))
-    real_input = np.zeros(shape=(num_signal, num_samples))
-    imag_input = np.zeros(shape=(num_signal, num_samples))
-    ret_input = np.zeros(shape=(num_signal, num_samples, 2))
-    temp_output = np.zeros(shape=(num_signal,1))
+    ret_input = np.zeros(shape=(num_signal*100, num_samples/100, 2))
+    temp_output = np.zeros(shape=(num_signal*100,1))
 
     counter = 0
-    counter2 = 0
+    subrow_counter = 0
+    out_counter = 0
 
     print('Processing data')
 
@@ -32,23 +31,37 @@ def loadData(directory, num_signal, num_samples):
 
         temp_input[counter] = np.array(np.loadtxt(directory + "/" + samples_filename))
 
-        i = 0
-        j = 0
-        while(j in range(0,temp_input.shape[1]-1)):
-            #real_input[counter,i] = temp_input[counter,j]
-            ret_input[counter,i,0] = temp_input[counter,j]
-            j = j+1
-            #imag_input[counter,i] = temp_input[counter,j]
-            ret_input[counter,i,1] = temp_input[counter,j]
-            j = j+1
-            i = i+1
+        j = 0 #temp_input column counter
+        subelement_counter = 0
 
-        temp_output[counter] = np.loadtxt(directory + "/" + mod_filename)
+        while(j in range(0,temp_input.shape[1]-1)):
+            if(subelement_counter >= 100):
+                subelement_counter = 0
+                subrow_counter = subrow_counter+1
+
+            ret_input[subrow_counter,subelement_counter,0] = temp_input[counter,j]
+            j = j+1
+            ret_input[subrow_counter,subelement_counter,1] = temp_input[counter,j]
+            j = j+1
+
+            subelement_counter = subelement_counter+1
+
+
+        k = 0
+        for k in range(0,100):
+            temp_output[out_counter] = np.loadtxt(directory + "/" + mod_filename)
+            out_counter = out_counter+1
         counter = counter + 1
 
+    print('shuffling data')
+    rng_state = np.random.get_state()
+    np.random.shuffle(ret_input)
+    np.random.set_state(rng_state)
+    np.random.shuffle(temp_output)
 
-    print('Resulting input vector: ')
-    print(ret_input)
-    print('Resulting output vector: ')
-    print(temp_output)
+
+    print('Resulting input vector shape: ')
+    print(ret_input.shape)
+    print('Resulting output vector shape: ')
+    print(temp_output.shape)
     return ret_input, temp_output
