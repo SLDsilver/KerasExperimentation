@@ -29,12 +29,13 @@ class top_block(gr.top_block):
         self.symb_rate = symb_rate = 10e6
         self.samp_rate = samp_rate = 100e6
         self.samps_per_symb = samps_per_symb = int(samp_rate/symb_rate)
-        self.SNR = SNR = randint(1,30)
+        self.SNR = SNR = randint(5,30)
         self.rrc_taps = rrc_taps = 101
         self.rrc_alpha = rrc_alpha = 0.35
         self.noise_volt = noise_volt = pow(samps_per_symb/pow(10.0,SNR/10.0),0.5)
         self.modulation_scheme = modulation_scheme = randint(0,4)
         os.system('echo "' + str(modulation_scheme) + '"' + ' >> modScheme' + str(file_index) +'.txt')
+        os.system('echo "' + str(modulation_scheme) + ' ' + str(SNR) + '"' + ' >> datasetSpecifics.txt')
         self.VT = VT = 4,6,[ -1.5633e+00+ 5.5460e-01j, -1.3833e+00+ 5.5460e-01j,
         -1.0234e+00+ 5.5460e-01j, -1.2034e+00+ 5.5460e-01j,
         -7.3553e-01+ 5.0751e-02j, -8.0750e-01+ 1.7671e-01j,

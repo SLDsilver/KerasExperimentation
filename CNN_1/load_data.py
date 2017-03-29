@@ -1,8 +1,9 @@
 #Handles all data formatting and importation
 import os
 import numpy as np
-input_id = 'sample'
-output_id = 'mod'
+import re
+input_id = 'samples'
+output_id = 'modScheme'
 #Default form
 #Converts raw data into
 #input = numpy array of vectors of the entire length
@@ -14,22 +15,26 @@ output_id = 'mod'
 def loadData(directory, num_signal, num_samples):
     temp_input = np.zeros(shape=(num_signal, num_samples*2))
     temp_output = np.zeros(shape=(num_signal, 1))
-    counter = 0
-    counter2 = 0
     print('Processing data')
     for filename in os.listdir(directory):
         print('Currently processing: ' + filename)
         if input_id in filename:
-            temp_input[counter] = np.loadtxt(directory + "/" + filename)
-            counter = counter + 1
+            location = int(re.sub(r"\D", "", filename))
+            temp_input[location] = np.loadtxt(directory + "/" + filename)
         if output_id in filename:
-            temp_output[counter2] = np.loadtxt(directory + "/" + filename)
-            counter2 = counter2 + 1
-    print('Resulting input vector: ')
-    print(temp_input)
-    print('Resulting output vector: ')
-    print(temp_output)
+            location = int(re.sub(r"\D", "", filename))
+            temp_output[location] = np.loadtxt(directory + "/" + filename)
+    #print('Resulting input vector: ')
+    #print(temp_input)
+    #print('Resulting output vector: ')
+    #print(temp_output)
     return temp_input, temp_output
+'''
+#Allows you specify how much the directory you wish to train against
+def loadData(directory, num_signal, num_samples, percentage):
+    temp_input = np.zeros(shape=(num_signal*percentage), num_samples*2))
+    temp_output = np.zeroes(shape=(int(num_signal*percentage), 1))'''
+
 
             
             
