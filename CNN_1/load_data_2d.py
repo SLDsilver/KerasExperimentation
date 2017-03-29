@@ -1,34 +1,54 @@
 #Handles all data formatting and importation
 import os
 import numpy as np
+
+
 input_id = 'sample'
 output_id = 'mod'
-#Default form
-#Converts raw data into
-#input = numpy array of vectors of the entire length
-#i.e. array([[1 2 3 ...], [1 2 3 ...], ...])
-# array.length = number of signals
-# vector content = real, imaginary, real , imaginary ...
-#output = numpy array of the number of signals
-#i.e. array([[1], [2], [3], ...])
+
+#num_signal = number of files
+#num_samples = number of samples per file
+#directory = direccytory the data is kept in
+
 def loadData(directory, num_signal, num_samples):
     temp_input = np.zeros(shape=(num_signal, num_samples*2))
-    temp_output = np.zeroes(shape=(num_signal,1))
+    real_input = np.zeros(shape=(num_signal, num_samples))
+    imag_input = np.zeros(shape=(num_signal, num_samples))
+    ret_input = np.zeros(shape=(num_signal, num_samples, 2))
+    temp_output = np.zeros(shape=(num_signal,1))
+
     counter = 0
+    counter2 = 0
 
     print('Processing data')
-    for filename in os.listdir(directory):
-        print('Currently processing: ' + filename)
-        if input_id in filename:
-            temp_input[counter] = np.loadtxt(directory + "/" + filename)
-            counter = counter + 1
-        if output_id in filename:
-            temp_output = np.loadtxt(directory + "/" + filename)
+
+    filecount = 0
+    for filecount in range(0,num_signal):
+
+        samples_filename = 'samples' + str(filecount) + '.txt'
+        mod_filename = 'modScheme' + str(filecount) + '.txt'
+
+        print('Currently processing: ' + samples_filename)
+
+        temp_input[counter] = np.array(np.loadtxt(directory + "/" + samples_filename))
+
+        i = 0
+        j = 0
+        while(j in range(0,temp_input.shape[1]-1)):
+            #real_input[counter,i] = temp_input[counter,j]
+            ret_input[counter,i,0] = temp_input[counter,j]
+            j = j+1
+            #imag_input[counter,i] = temp_input[counter,j]
+            ret_input[counter,i,1] = temp_input[counter,j]
+            j = j+1
+            i = i+1
+
+        temp_output[counter] = np.loadtxt(directory + "/" + mod_filename)
+        counter = counter + 1
+
+
     print('Resulting input vector: ')
-    print(temp_input)
+    print(ret_input)
     print('Resulting output vector: ')
     print(temp_output)
-    print('For debugging purposes:')
-    print('Input Shape: ' + temp_input.shape)
-    print('Output Shape: ' + temp_output.shape)
-    return temp_input, temp_output
+    return ret_input, temp_output
