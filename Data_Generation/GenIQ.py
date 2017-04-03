@@ -29,7 +29,7 @@ class top_block(gr.top_block):
         self.symb_rate = symb_rate = 10e6
         self.samp_rate = samp_rate = 100e6
         self.samps_per_symb = samps_per_symb = int(samp_rate/symb_rate)
-        self.SNR = SNR = randint(1,30)
+        self.SNR = SNR = randint(5,30)
         self.rrc_taps = rrc_taps = 101
         self.rrc_alpha = rrc_alpha = 0.35
         self.noise_volt = noise_volt = pow(samps_per_symb/pow(10.0,SNR/10.0),0.5)

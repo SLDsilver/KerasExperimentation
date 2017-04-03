@@ -10,6 +10,9 @@ import numpy as np
 import correct_Complex as c
 import load_data_2d as ld
 
+
+
+
 # input_train = np.empty([20000, 100, 1],dtype = float)
 #
 # #Load the input data
@@ -32,20 +35,32 @@ import load_data_2d as ld
 # num_classes = output_test.shape[1]
 # print('Num_classes is' + str(num_classes))
 
-train_directory = "samples"
-test_directory = 'not yet defined'
+train_directory = 'samples'
+test_directory = 'tests'
 
-num_files = 1
+num_files = 10
+num_tests = 3
 num_samples = 10000
 
 
 #Load the training tuple
-train_x, train_y = ld.loadData(train_directory, num_files, num_samples)
-# train_x = np.array(train_x).reshape(num_files, num_samples, 2)
-# train_y = np.array(train_y).reshape(num_files, 1)
+print('Loading training data')
+in_train, out_train = ld.loadData(train_directory, num_files, num_samples)
+in_train = np.array(in_train).reshape(num_files*100, num_samples/100, 2, 1)
+out_train = np.array(out_train).reshape(num_files*100, 1)
 
-train_y = np_utils.to_categorical(train_y)
-num_signals = train_y.shape[1]
+out_train = np_utils.to_categorical(out_train,5)
+#num_signals = train_y.shape[1]
+
+#Load the testing tuple
+print('Loading test data')
+in_test, out_test = ld.loadData(test_directory,num_tests,num_samples)
+in_test = np.array(in_test).reshape(num_tests*100, num_samples/100, 2, 1)
+out_test = np.array(out_test).reshape(num_tests*100, 1)
+
+out_test = np_utils.to_categorical(out_test,5)
+
+num_signals = 5;
 
 ################################# Model Construction ############################
 #Adjust model parameters here
@@ -59,12 +74,12 @@ model = Sequential()
 model.add(Conv2D(10,(2, 2),padding='same',input_shape=input_shape))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2,1)))
-model.add(Dropout(0.25))
+model.add(Dropout(0.1))
 
 model.add(Conv2D(20,(2,2),padding='same'))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2,1)))
-model.add(Dropout(0.25))
+model.add(Dropout(0.1))
 
 model.add(Flatten())
 model.add(Dense(100))
@@ -73,6 +88,12 @@ model.add(Dropout(0.5))
 model.add(Dense(5))
 model.add(Activation('softmax'))
 
+model.compile(loss='categorical_crossentropy',
+              optimizer='rmsprop',
+              metrics=['accuracy'])
+
 print(model.summary())
-model.fit(input_train, output_train, batch_size = 10, epochs=10)
-#print(model.evaluate(input_test, output_test, batch_size=1))
+model.fit(in_train, out_train, batch_size = 10, epochs=25)
+model.save('Trained_Net1_0')
+print('Evaluation:')
+print(model.evaluate(in_test, out_test, batch_size=1))
