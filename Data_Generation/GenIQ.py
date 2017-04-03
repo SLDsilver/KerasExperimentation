@@ -35,6 +35,7 @@ class top_block(gr.top_block):
         self.noise_volt = noise_volt = pow(samps_per_symb/pow(10.0,SNR/10.0),0.5)
         self.modulation_scheme = modulation_scheme = randint(0,4)
         os.system('echo "' + str(modulation_scheme) + '"' + ' >> modScheme' + str(file_index) +'.txt')
+        os.system('echo "' + str(modulation_scheme) + ' ' + str(SNR) + '"' + ' >> datasetSpecifics.txt')
         self.VT = VT = 4,6,[ -1.5633e+00+ 5.5460e-01j, -1.3833e+00+ 5.5460e-01j,
         -1.0234e+00+ 5.5460e-01j, -1.2034e+00+ 5.5460e-01j,
         -7.3553e-01+ 5.0751e-02j, -8.0750e-01+ 1.7671e-01j,
