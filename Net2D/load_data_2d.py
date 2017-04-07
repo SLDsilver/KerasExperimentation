@@ -19,7 +19,7 @@ def loadData(directory, num_signal, num_samples):
     subrow_counter = 0
     out_counter = 0
 
-    print('Processing data')
+    #print('Processing data')
 
     filecount = 0
     for filecount in range(0,num_signal):
@@ -59,9 +59,4 @@ def loadData(directory, num_signal, num_samples):
     np.random.set_state(rng_state)
     np.random.shuffle(temp_output)
 
-
-    print('Resulting input vector shape: ')
-    print(ret_input.shape)
-    print('Resulting output vector shape: ')
-    print(temp_output.shape)
-    return ret_input, temp_output
+    return np.array(ret_input).reshape(num_signal*100, num_samples/100, 2,1), np.array(temp_output).reshape(num_signal*100,1)
