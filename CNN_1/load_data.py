@@ -28,20 +28,16 @@ def loadData(directory, num_signal, num_samples):
         if output_id in filename:
             location = int(re.sub(r"\D", "", filename))
             temp_output[location] = np.loadtxt(directory + "/" + filename)
-    #print('Resulting input vector: ')
-    #print(temp_input)
-    #print('Resulting output vector: ')
-    #print(temp_output)
     return temp_input, temp_output
 
 ''' loadDataAlpha allows you to fragment the data
 Desired Input Shape is (num_signal_total, num_size, 1)
 num_signal = the number of signals you generated = # of samples.txt files
-num_samples = the number of samples per a signal = 2x the sampling point
+num_samples = the number of samples per a signal = # of sampling points
 num_size = the size of the fragments
 '''
 def loadDataAlpha(directory, num_signal, num_samples, num_size, data_log = "dataLog.txt", log = False):
-    num_signal_total = int(num_signal * num_samples / num_size) #Calculate the number of signal fragments total
+    num_signal_total = int(num_signal * 2 * num_samples / num_size) #Calculate the number of signal fragments total
     num_samples_set = int(num_samples / num_size)   #Calculate the number of signal fragments per a signal
     temp_input = np.zeros(shape=(num_signal_total, num_size))    #Initialize array
     temp_output= np.zeros(shape=(num_signal_total, 1))      #Initialize array
@@ -50,7 +46,6 @@ def loadDataAlpha(directory, num_signal, num_samples, num_size, data_log = "data
     print('Processing data')
     for filename in os.listdir(directory):  #For each file in directory
         if input_id in filename:            #If it is a signal file
-            #print('Currently processing: ' + filename)
             fileID = int(re.sub(r"\D", "", filename))   #Grab the signal number
             temp_data = np.loadtxt(directory + "/" + filename)  #Load the data
             temp_sol = np.loadtxt(directory + "/" + output_id + str(fileID) + ".txt")   #Load the data
@@ -64,9 +59,41 @@ def loadDataAlpha(directory, num_signal, num_samples, num_size, data_log = "data
     print('Finished processing data')
     temp_input = np.array(temp_input).reshape(num_signal_total, num_size, 1)
     temp_output = np_utils.to_categorical(np.array(temp_output))
-    print(temp_input.shape)
-    print(temp_output.shape)
     
+    return temp_input, temp_output
+
+
+''' loadDataCancer allows you to fragment the data
+Desired Input Shape is (num_signal_total, num_size, 1)
+num_signal = the number of signals you generated = # of samples.txt files
+num_samples = the number of samples per a signal = # of sampling points
+num_size = the size of the fragments
+'''
+def loadDataCancer(directory, num_signal, num_samples, num_size, data_log="dataLog.txt", log=False):
+    num_signal_total = int(num_signal * num_samples / num_size)  # Calculate the number of signal fragments total
+    num_samples_set = int(num_samples / num_size)  # Calculate the number of signal fragments per a signal
+    temp_input = np.zeros(shape=(num_signal_total, num_size, 2))  # Initialize array
+    temp_output = np.zeros(shape=(num_signal_total, 1))  # Initialize array
+    positions = random.sample(range(num_signal_total), num_signal_total)  # List of random numbers
+    counter = 0
+    print('Processing data')
+    for filename in os.listdir(directory):  # For each file in directory
+        if input_id in filename:  # If it is a signal file
+            print('Processing file:' + filename)
+            fileID = int(re.sub(r"\D", "", filename))  # Grab the signal number
+            temp_data = np.loadtxt(directory + "/" + filename)  # Load the data
+            temp_sol = np.loadtxt(directory + "/" + output_id + str(fileID) + ".txt")  # Load the data
+            temp_data = np.reshape(temp_data, (num_samples_set, num_size, 2))  # Shape data
+            for x in range(0, num_samples_set):
+                if (log):
+                    manualValidate(data_log, positions[counter], filename, temp_sol, temp_data[x])
+                temp_input[positions[counter]] = temp_data[x]
+                temp_output[positions[counter]] = temp_sol
+                counter = counter + 1
+    print('Finished processing data')
+    temp_input = np.array(temp_input)
+    temp_output = np_utils.to_categorical(np.array(temp_output))
+
     return temp_input, temp_output
 
 ''' Returns data in the binary format
@@ -82,7 +109,6 @@ def loadDataBinary(directory, num_signal, num_samples, num_size, signal_type, da
     print('Processing data')
     for filename in os.listdir(directory):  #For each file in directory
         if input_id in filename:            #If it is a signal file
-            #print('Currently processing: ' + filename)
             fileID = int(re.sub(r"\D", "", filename))   #Grab the signal number
             temp_data = np.loadtxt(directory + "/" + filename)  #Load the data
             temp_sol = np.loadtxt(directory + "/" + output_id + str(fileID) + ".txt")   #Load the data
@@ -99,7 +125,6 @@ def loadDataBinary(directory, num_signal, num_samples, num_size, signal_type, da
     print('Finished processing data')
     temp_input = np.array(temp_input).reshape(num_signal_total, num_size, 1)
     temp_output = np_utils.to_categorical(np.array(temp_output))
-
     return temp_input, temp_output
 
 #Prints to terminal where a supposed signal data, signal type, and filename is
@@ -109,6 +134,48 @@ def manualValidate(data_log, position, filename, signal_type, data):
         f.write("The position " + str(position) + " data comes from " + filename + "\t")
         f.write("Its corresponding signal type is " + str(signal_type))
         f.write("\n")
+
+#Modifies to Binary
+#Not yet tested
+def modifyToBinary(data, signal_type):
+    size = data.shape[0]
+    temp_binary = np.zeros(shape=(size, 1))
+    for x in range(0, temp_binary.shape[0]):
+        for y in range(0, temp_binary.shape[1]):
+            if data[0][signal_type] == 1:
+                temp_binary[x] = 1
+            else:
+                temp_binary[y] = 0
+    return temp_binary
+
+
+def loadDataBeta(directory, num_dir, num_signal, num_samples, num_size, data_log="dataLog.txt", log=False):
+    num_signal_total = int(num_signal * num_samples / num_size)  # Calculate the number of signal fragments total
+    num_samples_set = int(num_samples / num_size)  # Calculate the number of signal fragments per a signal
+    temp_input = np.zeros(shape=(num_signal_total*num_dir, num_size))  # Initialize array
+    temp_output = np.zeros(shape=(num_signal_total*num_dir, 1))  # Initialize array
+    positions = random.sample(range(num_signal_total*num_dir), num_signal_total*num_dir)  # List of random numbers
+    counter = 0
+    print('Processing data')
+    for folder in directory:    #For every folder
+        for filename in os.listdir(folder):  # For each file in directory
+            if input_id in filename:  # If it is a signal file
+                fileID = int(re.sub(r"\D", "", filename))  # Grab the signal number
+                str_file = folder + "/" + filename
+                temp_data = np.loadtxt(str_file)  # Load the data
+                temp_sol = np.loadtxt(folder + "/" + output_id + str(fileID) + ".txt")  # Load the data
+                temp_data = np.reshape(temp_data, (num_samples_set, num_size))  # Shape data
+                for x in range(0, num_samples_set):
+                    if (log):
+                        manualValidate(data_log, positions[counter], filename, temp_sol, temp_data[x])
+                    temp_input[positions[counter]] = temp_data[x]
+                    temp_output[positions[counter]] = temp_sol
+                    counter = counter + 1
+    print('Finished processing data')
+    temp_input = np.array(temp_input).reshape(num_signal_total*num_dir, num_size, 1)
+    temp_output = np_utils.to_categorical(np.array(temp_output))
+
+    return temp_input, temp_output
     
 
 

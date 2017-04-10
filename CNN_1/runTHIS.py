@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout
+from keras.layers import Dense, Activation, Dropout, Flatten
 from keras.utils import np_utils
 from keras.layers import Conv1D, GlobalAveragePooling1D, MaxPooling1D
 from keras.optimizers import SGD
@@ -8,58 +8,55 @@ from contextlib import redirect_stdout
 import numpy as np
 import load_data as ld
 
-train_directory = "samples2"
-test_directory = 'valid'
-model_file = 'model_2C.h5'
+def catergorical_model(size, num_signals, depth):
+    #Model Construction
+    # Create the model
+    model = Sequential()
+    #Input shape of form: (depth, width, height); For 1D, (width,height)
+    model.add(Conv1D(32, 2, activation='relu', input_shape=(size, depth)))
+    model.add(Conv1D(32, 2, activation='relu'))
+    model.add(Dropout(.2))
+    #model.add(Conv1D(4, 2, activation='relu'))
+    #model.add(Conv1D(4, 2, activation='relu'))
+    #model.add(Dropout(.2))
+    #model.add(Conv1D(2, 2, activation='relu'))
+    #model.add(Conv1D(64, 10, activation='relu'))
+    #model.add(Conv1D(32, 2, activation='relu'))
+    model.add(Dropout(.2))
+    model.add(Flatten())
+    model.add(Dropout(.2))
+    #model.add(Dense(256, activation='relu'))
+    #model.add(Dense(512, activation='relu'))
+    #model.add(Dense(5096, activation='relu'))
+    #model.add(Dense(2048, activation='relu'))
+    model.add(Dense(num_signals, activation='softmax'))
 
-#Data Importation
-#Load the training tuple
-train_x, train_y = ld.loadDataAlpha(train_directory, 100, 20000, 200)
+    # Compile model
+    #epoches = 2
+    #lrate = .01
+    #decay = lrate / epoches
+    #sgd = SGD(lr=lrate, momentum=.9, decay=decay, nesterov=False)
+    model.compile(loss='categorical_crossentropy',
+                  optimizer= 'adam',
+                  metrics=['accuracy'])
 
-#Load the validation tuple
-test_x, test_y = ld.loadDataAlpha(test_directory, 20, 20000, 200)
-num_signals = test_y.shape[1]
+    print(model.summary())
+    return model
 
-#Model Construction
-j = 4
-for i in range(1,96):
-    for j in range(1, 100):
-        for k in range(0, 3):
-            # Create the model
-            model = Sequential()
-            # Input shape of form: (depth, width, height); For 1D, (width,height)
-            model.add(Conv1D(i, j, activation='relu', input_shape=(200, 1)))
-            model.add(Dropout(.2))
-            #model.add(Conv1D(i, j, activation='relu'))
-            #model.add(MaxPooling1D(2))
-            #model.add(Dropout(.2))
-            model.add(GlobalAveragePooling1D())
-            model.add(Dropout(.2))
-            model.add(Dense(256, activation='relu'))
-            model.add(Dense(num_signals, activation='softmax'))
+def activate(model, train_x, train_y, test_x, test_y):
+    # Model training
+    model.fit(train_x, train_y, epochs=2, batch_size=52, validation_data=(test_x, test_y))
+    # model.save(model_file)
+    scores = model.evaluate(test_x, test_y, verbose=0)
 
-            # Compile model
-            epoches = 10
-            lrate = .01
-            decay = lrate / epoches
-            sgd = SGD(lr=lrate, momentum=.9, decay=decay, nesterov=False)
-            model.compile(loss='categorical_crossentropy',
-                          optimizer=sgd,
-                          metrics=['accuracy'])
+    #Document the results
+    location = "brute_exploration/exploration" + ".txt"
+    with open(location, 'a+') as f:
+        f.write( str(32) + "\t" + str(20))
+        f.write("\t%.2f%%" % (scores[1] * 100))
+        f.write("\n")
 
-            #print(model.summary())
-            # Model training
-            model.fit(train_x, train_y, epochs=epoches, batch_size=32, validation_data=(test_x, test_y))
-            # model.save(model_file)
-            scores = model.evaluate(test_x, test_y, verbose=0)
-            #Document the results
-            location = "brute_exploration/exploration" + str(i) + str(j) + ".txt"
-            with open(location, 'a+') as f:
-                f.write("Model uses: " + str(i) + " filters and " + str(j) + " activation area\t")
-                f.write("Accuracy: %.2f%%" % (scores[1] * 100))
-                f.write("\n")
-
-
+    
 
 
 

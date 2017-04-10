@@ -1,0 +1,92 @@
+The actual solutions are below.
+The actual solutions are below.
+[[ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ ..., 
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]]
+The model predicted that ... 
+The actual solutions are below.
+[[ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ ..., 
+ [ 1.  0.]
+ [ 0.  1.]
+ [ 1.  0.]]
+The model predicted that ... 
+The actual solutions are below.
+[[ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ ..., 
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]]
+The model predicted that ... 
+The actual solutions are below.
+[[ 1.  0.]
+ [ 1.  0.]
+ [ 0.  1.]
+ ..., 
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]]
+The model predicted that ... 
+The actual solutions are below.
+[[ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ ..., 
+ [ 1.  0.]
+ [ 0.  1.]
+ [ 1.  0.]]
+The model predicted that ... 
+
+Accuracy: 84.95%The actual solutions are below.
+[[ 0.  1.]
+ [ 1.  0.]
+ [ 1.  0.]
+ ..., 
+ [ 1.  0.]
+ [ 0.  1.]
+ [ 1.  0.]]
+The model predicted that ... 
+The actual solutions are below.
+[[ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ ..., 
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]]
+The model predicted that ... 
+The actual solutions are below.
+[[ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ ..., 
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]]
+The model predicted that ... 
+The actual solutions are below.
+[[ 1.  0.]
+ [ 1.  0.]
+ [ 1.  0.]
+ ..., 
+ [ 1.  0.]
+ [ 1.  0.]
+ [ 0.  1.]]
+The model predicted that ... 
+The actual solutions are below.
+[[ 1.  0.]
+ [ 1.  0.]
+ [ 0.  1.]
+ ..., 
+ [ 0.  1.]
+ [ 1.  0.]
+ [ 1.  0.]]
+The model predicted that ... 

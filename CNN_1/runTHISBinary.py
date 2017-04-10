@@ -68,9 +68,11 @@ def createModels(num_signals):
             f.write("\n")
             f.write("The model predicted that ... ")
             f.write("\n")
+            
             sess = tf.InteractiveSession()
-            a = tf.constant(layer_final.output)
-            tf.Print(a, 
+            a = layer_final.output
+            print(a)
+            tf.Print(a, [a])
+            tf.eval()
             f.write("\n")
             f.write("Accuracy: %.2f%%" % (scores[1] * 100))
-createModels(5)
