@@ -46,7 +46,7 @@ def train(in_train,out_train,in_test,out_test):
 
     print(model.summary())
 
-    model.fit(in_train, out_train, batch_size = 10, epochs=10, validation_data=(in_test,out_test))
+    model.fit(in_train, out_train, batch_size = 10, epochs=11, validation_data=(in_test,out_test))
     model.save('Trained_Net1_1')
     print('Evaluation:')
     print(model.evaluate(in_test, out_test, batch_size=1))

@@ -11,37 +11,36 @@ from keras import backend as K
 def train(in_train,out_train,in_test,out_test,save_name):
     ################################# Model Construction ############################
     #Adjust model parameters here
-    input_shape = (100, 2, 1) #10k sample points, real and complex, one point deep
+    input_shape = (10000, 2, 1) #10k sample points, real and complex, one point deep
 
     #Create Net Structure
     model = Sequential()
 
     #First block
     #2d Convolutional net 10000 input values
-    model.add(Conv2D(10,(2, 2),padding='same',input_shape=input_shape))
-    model.add(Activation('relu'))
-    #model.add(MaxPooling2D(pool_size=(2,1)))
-    #model.add(Dropout(0.1))
-
-    model.add(Conv2D(20,(2,2),padding='same'))
-    model.add(Activation('relu'))
+    model.add(Conv2D(64,(10, 2),padding='same',input_shape=input_shape))
+    model.add(Activation('sigmoid'))
     model.add(MaxPooling2D(pool_size=(5,1)))
+    model.add(Dropout(0.1))
+
+    model.add(Conv2D(64,(10,2),padding='same'))
+    model.add(Activation('sigmoid'))
+    model.add(MaxPooling2D(pool_size=(2,1)))
     model.add(Dropout(0.00))
 
-    model.add(Conv2D(100,(2,2),padding='same'))
-    model.add(Activation('relu'))
+    model.add(Conv2D(64,(10,2),padding='same'))
+    model.add(Activation('sigmoid'))
     model.add(MaxPooling2D(pool_size=(2,1)))
     model.add(Dropout(0.1))
 
     model.add(Flatten())
-    model.add(Dense(100))
-    model.add(Activation('relu'))
+    model.add(Activation('sigmoid'))
     model.add(Dropout(0.25))
     model.add(Dense(5))
     model.add(Activation('softmax'))
 
     model.compile(loss='categorical_crossentropy',
-                  optimizer='rmsprop',
+                  optimizer='adam',
                   metrics=['accuracy'])
 
     print(model.summary())

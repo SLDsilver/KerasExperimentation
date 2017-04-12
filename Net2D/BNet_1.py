@@ -18,12 +18,12 @@ def train(in_train,out_train,in_test,out_test,net_name):
 
     #First block
     #2d Convolutional net 10000 input values
-    model.add(Conv2D(10,(2, 2),padding='same',input_shape=input_shape))
+    model.add(Conv2D(10,(10, 2),padding='same',input_shape=input_shape))
     model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(6,1)))
+    model.add(MaxPooling2D(pool_size=(5,1)))
     model.add(Dropout(0.25))
 
-    model.add(Conv2D(40,(2,2),padding='same'))
+    model.add(Conv2D(40,(10,2),padding='same'))
     model.add(Activation('relu'))
     model.add(MaxPooling2D(pool_size=(2,1)))
     model.add(Dropout(0.25))
@@ -32,7 +32,7 @@ def train(in_train,out_train,in_test,out_test,net_name):
     model.add(Dense(400))
     model.add(Activation('relu'))
     model.add(Dropout(0.5))
- 
+
     model.add(Dense(1))
     model.add(Activation('softmax'))
 
@@ -40,7 +40,7 @@ def train(in_train,out_train,in_test,out_test,net_name):
 
     print(model.summary())
 
-    model.fit(in_train, out_train, batch_size = 10, epochs=10, validation_data=(in_test,out_test))
+    model.fit(in_train, out_train, batch_size = 11, epochs=10, validation_data=(in_test,out_test))
     model.save(net_name)
     print('Evaluation:')
     print(model.evaluate(in_test, out_test, batch_size=1))

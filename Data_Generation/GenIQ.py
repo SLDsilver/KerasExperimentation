@@ -19,7 +19,7 @@ from random import randint
 
 class top_block(gr.top_block):
 
-    def __init__(self,ind):
+    def __init__(self,ind,modNum):
         gr.top_block.__init__(self, "Top Block")
 
         ##################################################
@@ -33,7 +33,7 @@ class top_block(gr.top_block):
         self.rrc_taps = rrc_taps = 101
         self.rrc_alpha = rrc_alpha = 0.35
         self.noise_volt = noise_volt = pow(samps_per_symb/pow(10.0,SNR/10.0),0.5)
-        self.modulation_scheme = modulation_scheme = randint(0,4)
+        self.modulation_scheme = modulation_scheme = modNum
         os.system('echo "' + str(modulation_scheme) + '"' + ' >> modScheme' + str(file_index) +'.txt')
         os.system('echo "' + str(modulation_scheme) + ' ' + str(SNR) + '"' + ' >> datasetSpecifics.txt')
         self.VT = VT = 4,6,[ -1.5633e+00+ 5.5460e-01j, -1.3833e+00+ 5.5460e-01j,
@@ -221,15 +221,16 @@ class top_block(gr.top_block):
         self.digital_chunks_to_symbols.set_symbol_table((self.BPSK[2]))
 
 
-def main(index, options=None):
+def main(mod_num, index, options=None):
 
-    tb = top_block(index)
+    tb = top_block(index,mod_num)
     tb.start()
     tb.wait()
 
 
 if __name__ == '__main__':
     iterations = 1
+    counter = 0
     if len(sys.argv) == 2:
         try:
             iterations = int(sys.argv[1])
@@ -240,5 +241,11 @@ if __name__ == '__main__':
 
     i = 0
     while i in range(0,iterations):
-        main(i)
+        if (iterations < 5):
+            counter = randint(0,4)
+        else:
+            counter = counter + 1
+            if (counter >=5 ):
+                counter = 0
+        main(counter, i)
         i = i+1

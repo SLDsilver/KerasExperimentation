@@ -13,6 +13,7 @@ import imp
 import numpy as np
 import correct_Complex as c
 import load_data_2d as ld
+import load_data_2d_10k as ld10k
 from random import randint
 
 
@@ -26,8 +27,8 @@ net_index = 0
 
 def loadData(train_directory,test_directory):
 
-    num_files = 20
-    num_tests = 5
+    num_files = 5
+    num_tests = 2
     num_samples = 10000
 
     #Load the training tuple
@@ -39,8 +40,7 @@ def loadData(train_directory,test_directory):
     out_train = np_utils.to_categorical(out_train,5)
     #num_signals = train_y.shape[1]
 
-    #Load
-    the testing tuple
+    #Loadthe testing tuple
     print('Loading test data')
     in_test, out_test = ld.loadData(test_directory,num_tests,num_samples)
     in_test = np.array(in_test).reshape(num_tests*100, num_samples/100, 2, 1)
@@ -49,9 +49,33 @@ def loadData(train_directory,test_directory):
     out_test = np_utils.to_categorical(out_test,5)
     return in_train, out_train, in_test, out_test
 
+def loadData10k(train_directory,test_directory):
+
+    num_files = 50
+    num_tests = 20
+    num_samples = 10000
+
+    #Load the training tuple
+    print('Loading training data')
+    in_train, out_train = ld10k.loadData(train_directory, num_files, num_samples)
+    in_train = np.array(in_train).reshape(num_files, num_samples, 2, 1)
+    out_train = np.array(out_train).reshape(num_files, 1)
+
+    out_train = np_utils.to_categorical(out_train,5)
+    #num_signals = train_y.shape[1]
+
+    #Loadthe testing tuple
+    print('Loading test data')
+    in_test, out_test = ld10k.loadData(test_directory,num_tests,num_samples)
+    in_test = np.array(in_test).reshape(num_tests, num_samples, 2, 1)
+    out_test = np.array(out_test).reshape(num_tests, 1)
+
+    out_test = np_utils.to_categorical(out_test,5)
+    return in_train, out_train, in_test, out_test
+
 def loadDataBinary(train_directory,test_directory):
-    num_files = 100  #Number of files per signal, not total
-    num_tests = 25  #Number of training files per signal, not total
+    num_files = 5  #Number of files per signal, not total
+    num_tests = 2  #Number of training files per signal, not total
     num_samples = 10000 #Number of smaples per file
 
     #Instantiate empty arrays
@@ -141,7 +165,7 @@ def loadDataBinary(train_directory,test_directory):
 
 
     # print('Resulting input vector shape: ')
-    # print(in_train[0].shape)
+    # print(in_train_binary[0].shape)
     # print('Resulting output vector shape: ')
     # print(out_train_binary[0].shape)
     # print('Example resulting input vecotr:')
@@ -166,6 +190,7 @@ if __name__ == "__main__":
             configFile = None
             if not (itrain.size and otrain.size and itest.size and otest.size):
                 itrain, otrain, itest, otest = loadDataBinary('samples','tests')
+
             print('Please enter to train 5 copies of BNet_1.py (x to exit): ')
 
             if(sys.stdin.readline() == 'x\n'): #exit loop
@@ -181,7 +206,9 @@ if __name__ == "__main__":
                 print('Error in net: ',ex)
         else:
             if not (itrain.size and otrain.size and itest.size and otest.size):
-                itrain, otrain, itest, otest = loadData('samples','samples2')
+                itrain, otrain, itest, otest = loadData10k('samples_even','tests_even')
+                #print(itrain)
+                print(otrain)
             print('Please enter to train Net2.py (x to exit): ')
 
             if(sys.stdin.readline() == 'x\n'): #exit loop

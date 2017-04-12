@@ -3,14 +3,14 @@ from keras.layers import Dense, Activation, Dropout
 from keras.utils import np_utils
 from keras.layers import Conv1D, GlobalAveragePooling1D, MaxPooling1D
 from keras.optimizers import SGD
-from contextlib import redirect_stdout
+#from contextlib import redirect_stdout
 
-import tensorflow as tf
+#import tensorflow as tf
 import numpy as np
 import load_data as ld
 
-train_directory = "samples2"
-test_directory = 'valid'
+train_directory = "samples_binary"
+test_directory = 'tests_binary'
 
 
 # Model - Binary Decision Making
@@ -21,9 +21,9 @@ def createModels(num_signals):
     for i in range(0,num_signals):
         #Binarizes the data
         #Import the data
-        train_x, train_y = ld.loadDataBinary(train_directory, 100, 20000, 200,i)
+        train_x, train_y = ld.loadDataBinary(train_directory, 200, 20000, 200,i)
         #Load the validation tuple
-        test_x, test_y = ld.loadDataBinary(test_directory, 20, 20000, 200, i)
+        test_x, test_y = ld.loadDataBinary(test_directory, 50, 20000, 200, i)
         num_signals = test_y.shape[1]
 
         #Model Construction
@@ -68,9 +68,9 @@ def createModels(num_signals):
             f.write("\n")
             f.write("The model predicted that ... ")
             f.write("\n")
-            sess = tf.InteractiveSession()
-            a = tf.constant(layer_final.output)
-            tf.Print(a, 
+            # sess = tf.InteractiveSession()
+            # a = tf.constant(layer_final.output)
+            # tf.Print(a,
             f.write("\n")
             f.write("Accuracy: %.2f%%" % (scores[1] * 100))
 createModels(5)
