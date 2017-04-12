@@ -4,18 +4,18 @@ import runTHIS as rT
 import sys
 if __name__ == "__main__":
     #Load the data
-    train_directory = 'samples' #["samples_0", "samples_1", "samples_2", "samples_3", "samples_4"]
+    train_directory = "Data/samples"# , "samples_1", "samples_2", "samples_3"]
     model_file = 'model_2C.h5'
 
     #Configuration: DO NOT MODIFY
     signal_size = 10000
-    num_folder = 5
+    num_folder = 4
     depth = 2
     #Configuration: CAN MODIFY
     num_signal_folder = 1000
-    signal_fragment_size = 1000
-    test_directory = 'valid'
-    test_num = 20
+    signal_fragment_size = 10000
+    test_directory = 'Data/samples2'
+    test_num = 100
 
     # Data Importation
     # Load the training tuple
@@ -34,5 +34,12 @@ if __name__ == "__main__":
         print('Do you wish to test further? Enter n to terminate.\n')
         if (sys.stdin.readline() == 'n\n'):
             testing = False
+            '''
+        rTB = imp.reload(rTB)
+        model = rTB.createModels(5)
+        rT.activate(train_x, train_y, test_x, test_y)
+        print('Do you wish to test further? Enter n to terminate.\n')
+        if(sys.stdin.readline() == 'n\n'):
+            testing = False'''
 
 

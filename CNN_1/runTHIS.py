@@ -13,22 +13,18 @@ def catergorical_model(size, num_signals, depth):
     # Create the model
     model = Sequential()
     #Input shape of form: (depth, width, height); For 1D, (width,height)
-    model.add(Conv1D(32, 2, activation='relu', input_shape=(size, depth)))
-    model.add(Conv1D(32, 2, activation='relu'))
+    model.add(Conv1D(64, 2, activation='relu', input_shape=(size, depth), padding='same'))
     model.add(Dropout(.2))
-    #model.add(Conv1D(4, 2, activation='relu'))
-    #model.add(Conv1D(4, 2, activation='relu'))
-    #model.add(Dropout(.2))
-    #model.add(Conv1D(2, 2, activation='relu'))
-    #model.add(Conv1D(64, 10, activation='relu'))
-    #model.add(Conv1D(32, 2, activation='relu'))
+    model.add(Conv1D(64, 2, activation='relu', padding='same'))
+    model.add(MaxPooling1D(4))
+    model.add(Conv1D(64, 2, activation='relu', padding='same'))
+    model.add(Conv1D(64, 2, activation='relu', padding='same'))
+    model.add(MaxPooling1D(4))
     model.add(Dropout(.2))
+    model.add(Conv1D(64, 2,activation='sigmoid'))
+    model.add(MaxPooling1D(4))
     model.add(Flatten())
     model.add(Dropout(.2))
-    #model.add(Dense(256, activation='relu'))
-    #model.add(Dense(512, activation='relu'))
-    #model.add(Dense(5096, activation='relu'))
-    #model.add(Dense(2048, activation='relu'))
     model.add(Dense(num_signals, activation='softmax'))
 
     # Compile model
@@ -45,7 +41,7 @@ def catergorical_model(size, num_signals, depth):
 
 def activate(model, train_x, train_y, test_x, test_y):
     # Model training
-    model.fit(train_x, train_y, epochs=2, batch_size=52, validation_data=(test_x, test_y))
+    model.fit(train_x, train_y, epochs=10, batch_size=16, validation_data=(test_x, test_y))
     # model.save(model_file)
     scores = model.evaluate(test_x, test_y, verbose=0)
 

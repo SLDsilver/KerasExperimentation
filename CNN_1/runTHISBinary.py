@@ -1,5 +1,5 @@
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout
+from keras.layers import Dense, Activation, Dropout, Flatten
 from keras.utils import np_utils
 from keras.layers import Conv1D, GlobalAveragePooling1D, MaxPooling1D
 from keras.optimizers import SGD
@@ -21,23 +21,26 @@ def createModels(num_signals):
     for i in range(0,num_signals):
         #Binarizes the data
         #Import the data
-        train_x, train_y = ld.loadDataBinary(train_directory, 100, 20000, 200,i)
+        train_x, train_y = ld.loadDataBinary(train_directory, 100, 20000, 20000,i)
         #Load the validation tuple
-        test_x, test_y = ld.loadDataBinary(test_directory, 20, 20000, 200, i)
+        test_x, test_y = ld.loadDataBinary(test_directory, 20, 20000, 20000, i)
         num_signals = test_y.shape[1]
 
         #Model Construction
         model_ID = "model" + str(i)
         model = Sequential()
         # Input shape of form: (depth, width, height); For 1D, (width,height)
-        model.add(Conv1D(2, 100, activation='relu', input_shape=(200, 1)))
+        model.add(Conv1D(32, 2, activation='relu', input_shape=(20000, 1)))
         model.add(Dropout(.2))
-        model.add(Conv1D(12, 64, activation='relu'))
+        model.add(Conv1D(32, 2, activation='relu'))
         # model.add(MaxPooling1D(2))
         model.add(Dropout(.2))
-        model.add(GlobalAveragePooling1D())
+        model.add(MaxPooling1D(2))
+        model.add(Conv1D(64, 2, activation='relu'))
         model.add(Dropout(.2))
-        model.add(Dense(256, activation='relu'))
+        model.add(Flatten())
+        model.add(Dropout(.2))
+        #model.add(Dense(256, activation='relu'))
         layer_final = Dense(num_signals, activation='softmax')
         model.add(layer_final)
 
@@ -50,7 +53,7 @@ def createModels(num_signals):
                               optimizer=sgd,
                               metrics=['accuracy'])
 
-        #print(model.summary())
+        print(model.summary())
 
         # Model training
         model.fit(train_x, train_y, epochs=epoches, batch_size=32, validation_data=(test_x, test_y))
@@ -69,10 +72,12 @@ def createModels(num_signals):
             f.write("The model predicted that ... ")
             f.write("\n")
             
-            sess = tf.InteractiveSession()
+            '''sess = tf.InteractiveSession()
             a = layer_final.output
             print(a)
             tf.Print(a, [a])
-            tf.eval()
+            tf.eval()'''
             f.write("\n")
             f.write("Accuracy: %.2f%%" % (scores[1] * 100))
+
+createModels(5)
