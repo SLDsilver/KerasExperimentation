@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import keras
-import imp
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Conv2D, MaxPooling2D, Convolution2D
@@ -51,8 +50,8 @@ def loadData(train_directory,test_directory):
 
 def loadData10k(train_directory,test_directory):
 
-    num_files = 50
-    num_tests = 20
+    num_files = 5
+    num_tests = 5
     num_samples = 10000
 
     #Load the training tuple
@@ -74,9 +73,10 @@ def loadData10k(train_directory,test_directory):
     return in_train, out_train, in_test, out_test
 
 def loadDataBinary(train_directory,test_directory):
-    num_files = 5  #Number of files per signal, not total
-    num_tests = 2  #Number of training files per signal, not total
+    num_files = 20  #Number of files per signal, not total
+    num_tests = 10   #Number of training files per signal, not total
     num_samples = 10000 #Number of smaples per file
+    spf = 100
 
     #Instantiate empty arrays
     in_train = np.zeros(shape = (5,num_files*100, num_samples/100, 2, 1))
@@ -90,19 +90,28 @@ def loadDataBinary(train_directory,test_directory):
     out_test_binary = np.zeros(shape = (5,num_tests*200,1))
 
     #Load the training tuple
-    in_train[0], out_train[0] = ld.loadData(train_directory + '_0', num_files, num_samples)
-    in_train[1], out_train[1] = ld.loadData(train_directory + '_1', num_files, num_samples)
-    in_train[2], out_train[2] = ld.loadData(train_directory + '_2', num_files, num_samples)
-    in_train[3], out_train[3] = ld.loadData(train_directory + '_3', num_files, num_samples)
-    in_train[4], out_train[4] = ld.loadData(train_directory + '_4', num_files, num_samples)
+    print("\nLoading training for signal: 0")
+    in_train[0], out_train[0] = ld.loadDataSplit(train_directory + '_0', num_files, num_samples, spf)
+    print("\nLoading training for signal: 1")
+    in_train[1], out_train[1] = ld.loadDataSplit(train_directory + '_1', num_files, num_samples, spf)
+    print("\nLoading training for signal: 2")
+    in_train[2], out_train[2] = ld.loadDataSplit(train_directory + '_2', num_files, num_samples, spf)
+    print("\nLoading training for signal: 3")
+    in_train[3], out_train[3] = ld.loadDataSplit(train_directory + '_3', num_files, num_samples, spf)
+    print("\nLoading training for signal: 4")
+    in_train[4], out_train[4] = ld.loadDataSplit(train_directory + '_4', num_files, num_samples, spf)
 
-    in_test[0], out_test[0] = ld.loadData(test_directory + '_0', num_tests, num_samples)
-    in_test[1], out_test[1] = ld.loadData(test_directory + '_1', num_tests, num_samples)
-    in_test[2], out_test[2] = ld.loadData(test_directory + '_2', num_tests, num_samples)
-    in_test[3], out_test[3] = ld.loadData(test_directory + '_3', num_tests, num_samples)
-    in_test[4], out_test[4] = ld.loadData(test_directory + '_4', num_tests, num_samples)
+    print("\nLoading testing for signal: 0")
+    in_test[0], out_test[0] = ld.loadDataSplit(test_directory + '_0', num_tests, num_samples, spf)
+    print("\nLoading testing for signal: 1")
+    in_test[1], out_test[1] = ld.loadDataSplit(test_directory + '_1', num_tests, num_samples, spf)
+    print("\nLoading testing for signal: 2")
+    in_test[2], out_test[2] = ld.loadDataSplit(test_directory + '_2', num_tests, num_samples, spf)
+    print("\nLoading testing for signal: 3")
+    in_test[3], out_test[3] = ld.loadDataSplit(test_directory + '_3', num_tests, num_samples, spf)
+    print("\nLoading testing for signal: 4")
+    in_test[4], out_test[4] = ld.loadDataSplit(test_directory + '_4', num_tests, num_samples, spf)
 
-    print('Loading Training/Test Data (5 signals):')
     signal_num = 0
     for signal_num in range(0,5):
         #Training Data
@@ -173,7 +182,6 @@ def loadDataBinary(train_directory,test_directory):
     # print('Example resulting output vector:')
     # print(out_train_binary[0])
     return in_train_binary, out_train_binary, in_test_binary, out_test_binary
-
 if __name__ == "__main__":
     doBinary = True
     print('Train a binary net [Y/n]:')
@@ -191,7 +199,7 @@ if __name__ == "__main__":
             if not (itrain.size and otrain.size and itest.size and otest.size):
                 itrain, otrain, itest, otest = loadDataBinary('samples','tests')
 
-            print('Please enter to train 5 copies of BNet_1.py (x to exit): ')
+            print('Enter to train 5 copies of BNet_1.py (x to exit): ')
 
             if(sys.stdin.readline() == 'x\n'): #exit loop
                sys.exit()
@@ -206,7 +214,7 @@ if __name__ == "__main__":
                 print('Error in net: ',ex)
         else:
             if not (itrain.size and otrain.size and itest.size and otest.size):
-                itrain, otrain, itest, otest = loadData10k('samples_even','tests_even')
+                itrain, otrain, itest, otest = loadData('samples_even','tests_even')
                 #print(itrain)
                 print(otrain)
             print('Please enter to train Net2.py (x to exit): ')

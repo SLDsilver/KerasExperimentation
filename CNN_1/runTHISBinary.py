@@ -21,15 +21,9 @@ def createModels(num_signals):
     for i in range(0,num_signals):
         #Binarizes the data
         #Import the data
-<<<<<<< HEAD
-        train_x, train_y = ld.loadDataBinary(train_directory, 200, 20000, 200,i)
-        #Load the validation tuple
-        test_x, test_y = ld.loadDataBinary(test_directory, 50, 20000, 200, i)
-=======
         train_x, train_y = ld.loadDataBinary(train_directory, 100, 20000, 20000,i)
         #Load the validation tuple
         test_x, test_y = ld.loadDataBinary(test_directory, 20, 20000, 20000, i)
->>>>>>> 1b38b6a48b248d867cb768443e01d9d3923d5f48
         num_signals = test_y.shape[1]
 
         #Model Construction
@@ -77,18 +71,11 @@ def createModels(num_signals):
             f.write("\n")
             f.write("The model predicted that ... ")
             f.write("\n")
-<<<<<<< HEAD
-            # sess = tf.InteractiveSession()
-            # a = tf.constant(layer_final.output)
-            # tf.Print(a,
-=======
-            
             '''sess = tf.InteractiveSession()
             a = layer_final.output
             print(a)
             tf.Print(a, [a])
             tf.eval()'''
->>>>>>> 1b38b6a48b248d867cb768443e01d9d3923d5f48
             f.write("\n")
             f.write("Accuracy: %.2f%%" % (scores[1] * 100))
 
